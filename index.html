@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>⚡ Nova Strike — Space Shooter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <span class="stat">⭐ <span class="val" id="scoreVal">0</span></span>
+    <span class="stat">🏅 <span class="val gold" id="highScoreVal">0</span></span>
+    <span class="stat">🪙 <span class="val gold" id="coinsVal">0</span></span>
+    <span class="stat">🏆 <span class="val" id="levelVal">1</span>/<span id="totalLevelsVal">10</span></span>
+    <div class="iconbtn-row">
+      <button class="iconbtn" id="soundBtn">🔊 Sound</button>
+      <button class="iconbtn" id="pauseBtn">⏸ Pause</button>
+    </div>
+  </div>
+
+  <div class="bar-block">
+    <div class="bar-label health"><span>🛡️ Hull</span><span id="healthPctVal">100%</span></div>
+    <div class="bar-track health-track"><div class="bar-fill health-fill" id="healthFill" style="width:100%"></div></div>
+  </div>
+
+  <div class="bar-block" id="progressBlock">
+    <div class="bar-label progress"><span id="progressLabel">Sector Progress</span><span id="progressVal">0/10</span></div>
+    <div class="bar-track progress-track"><div class="bar-fill progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="bar-block" id="bossBarBlock">
+    <div class="bar-label boss" id="bossNameVal">BOSS</div>
+    <div class="bar-track boss-track"><div class="bar-fill boss-fill" id="bossFill" style="width:100%"></div></div>
+  </div>
+
+  <div class="shield-row" id="shieldRow">
+    <span>SHIELD</span>
+    <span class="shield-pip" id="pip0"></span>
+    <span class="shield-pip" id="pip1"></span>
+    <span class="shield-pip" id="pip2"></span>
+    <span id="barrierRow" style="display:none;color:#3fd0ff;">💧 <span id="barrierVal">0</span></span>
+  </div>
+
+  <div class="stage">
+    <canvas id="gameCanvas" width="960" height="540"></canvas>
+    <div class="banner" id="banner"></div>
+
+    <div class="overlay active" id="overlayInstructions">
+      <h2 class="plain">📖 HOW TO PLAY</h2>
+      <p>Destroy enemies, dodge enemy fire, and beat the boss to clear each of the <span id="introLevels">10</span> sectors.</p>
+      <div class="howto-block">
+        <div class="howto-title">CONTROLS</div>
+        <p class="howto-line">⬅️ ➡️ or A / D — move your ship (or hold the ◀ ▶ buttons)</p>
+        <p class="howto-line">Space bar or the FIRE button — shoot</p>
+        <p class="howto-line">P key or the Pause button — pause the game</p>
+      </div>
+      <div class="howto-block">
+        <div class="howto-title">POWER-UPS</div>
+        <p class="howto-line">⚡ <b>Rapid Fire</b> — shoot much faster for a short time</p>
+        <p class="howto-line">💧 <b>Barrier +5</b> — a shield that blocks the next 5 enemy hits</p>
+        <p class="howto-line">🌀 <b>Damage Up</b> — your bullets hit harder for a while</p>
+        <p class="howto-line">❄ <b>Triple Shot</b> — fire 3 bullets at once instead of 1</p>
+        <p class="howto-line">🛸 <b>Wingman</b> — a drone escort fights alongside you</p>
+      </div>
+      <p class="hint">🪙 Collect coins to buy new ships & upgrades in the Shop</p>
+      <div class="btn-row">
+        <button class="primary-btn" id="btnInstructionsNext">NEXT ▶</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlayStart">
+      <h2>🚀 READY FOR LAUNCH?</h2>
+      <p>Destroy enemies, clear <span id="startLevels">10</span> sectors, and beat the boss of each round!</p>
+      <div class="btn-row">
+        <button class="primary-btn" id="btnStart">▶ START GAME</button>
+        <button class="secondary-btn" id="btnShop">🛒 SHOP</button>
+      </div>
+      <p class="playcount-note">🌍 Total players: <span id="playCountVal" style="color:#00f0ff;font-weight:700;">…</span> — counts everyone who has played Nova Strike.</p>
+    </div>
+
+    <div class="overlay" id="overlayPaused">
+      <h2 class="plain">⏸ GAME PAUSED</h2>
+      <p>Press P or Resume to continue</p>
+      <div class="btn-row">
+        <button class="primary-btn" id="btnResume">▶ RESUME</button>
+        <button class="secondary-btn" id="btnShopPause">🛒 SHOP</button>
+      </div>
+      <div class="btn-row">
+        <button class="danger-btn" id="btnQuit">🚪 EXIT TO MENU</button>
+      </div>
+      <p class="playcount-note" id="quitCoinsNote">🪙 Coins collected so far this run are saved automatically when you exit.</p>
+    </div>
+
+    <div class="overlay" id="overlayGameOver">
+      <h2 class="danger">💥 GAME OVER</h2>
+      <p class="final">Final score: <span class="val" id="goScore">0</span></p>
+      <p class="final">Coins earned: <span class="val" id="goCoins">0</span></p>
+      <p class="final">Reached sector: <span class="val" id="goLevel">1</span></p>
+      <p class="newhigh" id="goNewHigh">🏅 NEW HIGH SCORE!</p>
+      <div class="btn-row">
+        <button class="primary-btn" id="btnRestart">🔄 PLAY AGAIN</button>
+        <button class="secondary-btn" id="btnShopOver">🛒 SHOP</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlayWin">
+      <h2>🏆 GALAXY SAVED!</h2>
+      <p>You defeated every boss!</p>
+      <p class="final">Final score: <span class="val" id="winScore">0</span></p>
+      <p class="final">Coins earned: <span class="val" id="winCoins">0</span></p>
+      <p class="newhigh" id="winNewHigh">🏅 NEW HIGH SCORE!</p>
+      <button class="primary-btn" id="btnRestartWin">🔄 PLAY AGAIN</button>
+    </div>
+
+    <div class="overlay" id="overlayShop">
+      <h2 class="plain">🛒 STARSHIP SHOP</h2>
+      <div class="shop-coins">🪙 <span id="shopCoinsVal">0</span></div>
+      <div class="shop-tabs">
+        <button class="shop-tab active" id="tabShips">Ships</button>
+        <button class="shop-tab" id="tabUpgrades">Upgrades</button>
+      </div>
+      <div class="shop-grid" id="shopGrid"></div>
+      <button class="secondary-btn close-shop" id="btnCloseShop">✖ CLOSE</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="move-group">
+      <button class="ctrlbtn" id="btnLeft" aria-label="Move left">◀</button>
+      <button class="ctrlbtn" id="btnRight" aria-label="Move right">▶</button>
+    </div>
+    <button class="ctrlbtn fire" id="btnFire" aria-label="Fire">🔥 FIRE</button>
+  </div>
+
+  <p class="hint-text" style="opacity:0.7;">Developed by Mohamed Hassan</p>
+
+</div>
+
+<div class="rotate-hint" id="rotateHint">
+  <div class="spin">📱</div>
+  <h3>Rotate to Landscape</h3>
+  <p>Nova Strike plays best in landscape mode. Turn your device sideways for the full-size battlefield.</p>
+  <button class="secondary-btn" id="btnRotateOk" style="margin-top:14px;">Continue Anyway</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
