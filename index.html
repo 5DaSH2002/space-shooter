@@ -18,18 +18,19 @@
     <span class="stat">🪙 <span class="val gold" id="coinsVal">0</span></span>
     <span class="stat">🏆 <span class="val" id="levelVal">1</span>/<span id="totalLevelsVal">10</span></span>
     <div class="iconbtn-row">
+      <button class="iconbtn" id="langBtn" title="Language / اللغة">🌐 EN</button>
       <button class="iconbtn" id="soundBtn">🔊 Sound</button>
       <button class="iconbtn" id="pauseBtn">⏸ Pause</button>
     </div>
   </div>
 
   <div class="bar-block">
-    <div class="bar-label health"><span>🛡️ Hull</span><span id="healthPctVal">100%</span></div>
+    <div class="bar-label health"><span data-i18n="hull">🛡️ Hull</span><span id="healthPctVal">100%</span></div>
     <div class="bar-track health-track"><div class="bar-fill health-fill" id="healthFill" style="width:100%"></div></div>
   </div>
 
   <div class="bar-block" id="progressBlock">
-    <div class="bar-label progress"><span id="progressLabel">Sector Progress</span><span id="progressVal">0/10</span></div>
+    <div class="bar-label progress"><span id="progressLabel" data-i18n="sectorProgress">Sector Progress</span><span id="progressVal">0/10</span></div>
     <div class="bar-track progress-track"><div class="bar-fill progress-fill" id="progressFill" style="width:0%"></div></div>
   </div>
 
@@ -39,7 +40,7 @@
   </div>
 
   <div class="shield-row" id="shieldRow">
-    <span>SHIELD</span>
+    <span data-i18n="shield">SHIELD</span>
     <span class="shield-pip" id="pip0"></span>
     <span class="shield-pip" id="pip1"></span>
     <span class="shield-pip" id="pip2"></span>
@@ -51,90 +52,96 @@
     <div class="banner" id="banner"></div>
 
     <div class="overlay active" id="overlayInstructions">
-      <h2 class="plain">📖 HOW TO PLAY</h2>
-      <p>Destroy enemies, dodge enemy fire, and beat the boss to clear each of the <span id="introLevels">10</span> sectors.</p>
+      <h2 class="plain" data-i18n="howtoTitle">📖 HOW TO PLAY</h2>
+      <p data-i18n="howtoIntro">Pilot your ship across <span id="introLevels">25</span> space sectors. Destroy enemy waves, collect power-ups, and defeat each sector’s unique boss.</p>
       <div class="howto-block">
-        <div class="howto-title">CONTROLS</div>
-        <p class="howto-line">⬅️ ➡️ or A / D — move your ship (or hold the ◀ ▶ buttons)</p>
-        <p class="howto-line">Space bar or the FIRE button — shoot</p>
-        <p class="howto-line">P key or the Pause button — pause the game</p>
+        <div class="howto-title" data-i18n="howtoControls">CONTROLS</div>
+        <p class="howto-line" data-i18n="howtoMove">Virtual joystick or A/D/W/S / arrow keys — move freely in any direction</p>
+        <p class="howto-line" data-i18n="howtoFire">Hold Space or the FIRE button to shoot. Each weapon type has its own sound & look.</p>
+        <p class="howto-line" data-i18n="howtoPause">P key or the Pause button — pause the game. Use 🌐 to switch English / Arabic.</p>
       </div>
       <div class="howto-block">
-        <div class="howto-title">POWER-UPS</div>
-        <p class="howto-line">⚡ <b>Rapid Fire</b> — shoot much faster for a short time</p>
-        <p class="howto-line">💧 <b>Barrier +5</b> — a shield that blocks the next 5 enemy hits</p>
-        <p class="howto-line">🌀 <b>Damage Up</b> — your bullets hit harder for a while</p>
-        <p class="howto-line">❄ <b>Triple Shot</b> — fire 3 bullets at once instead of 1</p>
-        <p class="howto-line">🛸 <b>Wingman</b> — a drone escort fights alongside you</p>
+        <div class="howto-title" data-i18n="howtoPowerups">POWER-UPS (pick up the floating shapes)</div>
+        <p class="howto-line" data-i18n="puRapid">⚡ Yellow lightning — Rapid Fire (much faster shooting)</p>
+        <p class="howto-line" data-i18n="puShield">💧 Cyan hex — Barrier +5 (blocks the next 5 hits)</p>
+        <p class="howto-line" data-i18n="puDamage">🌀 Magenta spiked orb — Damage Up (stronger bullets)</p>
+        <p class="howto-line" data-i18n="puTriple">❄ Three cyan diamonds — Triple Shot (3 bullets at once)</p>
+        <p class="howto-line" data-i18n="puWingman">🛸 Mini green ship — Wingman drone fights beside you</p>
+        <p class="howto-line" data-i18n="puRocket">🚀 Orange rocket — Rocket Barrage (explosive splash)</p>
+        <p class="howto-line" data-i18n="puDual">🟡 Twin yellow capsules — Dual Laser (2 high-speed beams)</p>
+        <p class="howto-line" data-i18n="puBeam">🔴 Red crystal beam — Death Beam (hold FIRE to melt a column)</p>
+        <p class="howto-line" data-i18n="puFrost">🔵 Ice crystal — Frost Shot (piercing icy bolts)</p>
+        <p class="howto-line" data-i18n="puNova">🟢 Green star — Nova Burst (shots explode in an area)</p>
       </div>
-      <p class="hint">🪙 Collect coins to buy new ships & upgrades in the Shop</p>
+      <p class="hint" data-i18n="howtoHint">🪙 Coins buy ships & upgrades in the Shop. Weapon power-ups replace each other until they expire, then your base weapon returns.</p>
       <div class="btn-row">
-        <button class="primary-btn" id="btnInstructionsNext">NEXT ▶</button>
+        <button class="primary-btn" id="btnInstructionsNext" data-i18n="btnNext">NEXT ▶</button>
       </div>
     </div>
 
     <div class="overlay" id="overlayStart">
-      <h2>🚀 READY FOR LAUNCH?</h2>
-      <p>Destroy enemies, clear <span id="startLevels">10</span> sectors, and beat the boss of each round!</p>
+      <h2 data-i18n="startTitle">🚀 READY FOR LAUNCH?</h2>
+      <p data-i18n="startIntro">Destroy enemies, clear <span id="startLevels">10</span> sectors, and beat the boss of each round!</p>
       <div class="btn-row">
-        <button class="primary-btn" id="btnStart">▶ START GAME</button>
-        <button class="secondary-btn" id="btnShop">🛒 SHOP</button>
+        <button class="primary-btn" id="btnStart" data-i18n="btnStart">▶ START GAME</button>
+        <button class="secondary-btn" id="btnShop" data-i18n="btnShop">🛒 SHOP</button>
       </div>
-      <p class="playcount-note">🌍 Total players: <span id="playCountVal" style="color:#00f0ff;font-weight:700;">…</span> — counts everyone who has played Nova Strike.</p>
+      <p class="playcount-note" data-i18n="playCountNote">🌍 Total players: <span id="playCountVal" style="color:#00f0ff;font-weight:700;">…</span> — counts everyone who has played Nova Strike.</p>
     </div>
 
     <div class="overlay" id="overlayPaused">
-      <h2 class="plain">⏸ GAME PAUSED</h2>
-      <p>Press P or Resume to continue</p>
+      <h2 class="plain" data-i18n="pausedTitle">⏸ GAME PAUSED</h2>
+      <p data-i18n="pausedHint">Press P or Resume to continue</p>
       <div class="btn-row">
-        <button class="primary-btn" id="btnResume">▶ RESUME</button>
-        <button class="secondary-btn" id="btnShopPause">🛒 SHOP</button>
+        <button class="primary-btn" id="btnResume" data-i18n="btnResume">▶ RESUME</button>
+        <button class="secondary-btn" id="btnShopPause" data-i18n="btnShop">🛒 SHOP</button>
       </div>
       <div class="btn-row">
-        <button class="danger-btn" id="btnQuit">🚪 EXIT TO MENU</button>
+        <button class="danger-btn" id="btnQuit" data-i18n="btnQuit">🚪 EXIT TO MENU</button>
       </div>
-      <p class="playcount-note" id="quitCoinsNote">🪙 Coins collected so far this run are saved automatically when you exit.</p>
+      <p class="playcount-note" id="quitCoinsNote" data-i18n="quitCoins">🪙 Coins collected so far this run are saved automatically when you exit.</p>
     </div>
 
     <div class="overlay" id="overlayGameOver">
-      <h2 class="danger">💥 GAME OVER</h2>
-      <p class="final">Final score: <span class="val" id="goScore">0</span></p>
-      <p class="final">Coins earned: <span class="val" id="goCoins">0</span></p>
-      <p class="final">Reached sector: <span class="val" id="goLevel">1</span></p>
-      <p class="newhigh" id="goNewHigh">🏅 NEW HIGH SCORE!</p>
+      <h2 class="danger" data-i18n="goTitle">💥 GAME OVER</h2>
+      <p class="final"><span data-i18n="goScore">Final score:</span> <span class="val" id="goScore">0</span></p>
+      <p class="final"><span data-i18n="goCoins">Coins earned:</span> <span class="val" id="goCoins">0</span></p>
+      <p class="final"><span data-i18n="goLevel">Reached sector:</span> <span class="val" id="goLevel">1</span></p>
+      <p class="newhigh" id="goNewHigh" data-i18n="newHigh">🏅 NEW HIGH SCORE!</p>
       <div class="btn-row">
-        <button class="primary-btn" id="btnRestart">🔄 PLAY AGAIN</button>
-        <button class="secondary-btn" id="btnShopOver">🛒 SHOP</button>
+        <button class="primary-btn" id="btnRestart" data-i18n="btnAgain">🔄 PLAY AGAIN</button>
+        <button class="secondary-btn" id="btnShopOver" data-i18n="btnShop">🛒 SHOP</button>
       </div>
     </div>
 
     <div class="overlay" id="overlayWin">
-      <h2>🏆 GALAXY SAVED!</h2>
-      <p>You defeated every boss!</p>
-      <p class="final">Final score: <span class="val" id="winScore">0</span></p>
-      <p class="final">Coins earned: <span class="val" id="winCoins">0</span></p>
-      <p class="newhigh" id="winNewHigh">🏅 NEW HIGH SCORE!</p>
-      <button class="primary-btn" id="btnRestartWin">🔄 PLAY AGAIN</button>
+      <h2 data-i18n="winTitle">🏆 GALAXY SAVED!</h2>
+      <p data-i18n="winIntro">You defeated every boss!</p>
+      <p class="final"><span data-i18n="goScore">Final score:</span> <span class="val" id="winScore">0</span></p>
+      <p class="final"><span data-i18n="goCoins">Coins earned:</span> <span class="val" id="winCoins">0</span></p>
+      <p class="newhigh" id="winNewHigh" data-i18n="newHigh">🏅 NEW HIGH SCORE!</p>
+      <button class="primary-btn" id="btnRestartWin" data-i18n="btnAgain">🔄 PLAY AGAIN</button>
     </div>
 
     <div class="overlay" id="overlayShop">
-      <h2 class="plain">🛒 STARSHIP SHOP</h2>
+      <h2 class="plain" data-i18n="shopTitle">🛒 STARSHIP SHOP</h2>
       <div class="shop-coins">🪙 <span id="shopCoinsVal">0</span></div>
       <div class="shop-tabs">
-        <button class="shop-tab active" id="tabShips">Ships</button>
-        <button class="shop-tab" id="tabUpgrades">Upgrades</button>
+        <button class="shop-tab active" id="tabShips" data-i18n="tabShips">Ships</button>
+        <button class="shop-tab" id="tabUpgrades" data-i18n="tabUpgrades">Upgrades</button>
       </div>
       <div class="shop-grid" id="shopGrid"></div>
-      <button class="secondary-btn close-shop" id="btnCloseShop">✖ CLOSE</button>
+      <button class="secondary-btn close-shop" id="btnCloseShop" data-i18n="btnClose">✖ CLOSE</button>
     </div>
   </div>
 
-  <div class="controls">
-    <div class="move-group">
-      <button class="ctrlbtn" id="btnLeft" aria-label="Move left">◀</button>
-      <button class="ctrlbtn" id="btnRight" aria-label="Move right">▶</button>
+  <div class="controls" id="controlsBar">
+    <div class="joystick-zone" id="joystickZone" aria-label="Joystick">
+      <div class="joystick-base" id="joystickBase">
+        <div class="joystick-knob" id="joystickKnob"></div>
+      </div>
     </div>
-    <button class="ctrlbtn fire" id="btnFire" aria-label="Fire">🔥 FIRE</button>
+    <button class="ctrlbtn fire" id="btnFire" aria-label="Fire" data-i18n="btnFire">🔥 FIRE</button>
   </div>
 
   <p class="hint-text" style="opacity:0.7;">Developed by Mohamed Hassan</p>

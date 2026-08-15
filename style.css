@@ -16,7 +16,7 @@ body {
 }
 h1, h2, .neon-font { font-family: 'Orbitron', 'Quicksand', sans-serif; }
 
-.wrap { width: 100%; max-width: 1320px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.wrap { width: 100%; max-width: 1400px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
 .topbar {
   width: 100%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
@@ -85,7 +85,7 @@ h1, h2, .neon-font { font-family: 'Orbitron', 'Quicksand', sans-serif; }
   background: repeating-linear-gradient(180deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
   mix-blend-mode: overlay; opacity: 0.5;
 }
-#gameCanvas { display: block; width: 100%; height: auto; touch-action: none; border-radius: 14px; }
+#gameCanvas { display: block; width: 100%; height: auto; max-height: 100%; touch-action: none; border-radius: 14px; object-fit: contain; }
 
 .banner {
   position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
@@ -255,8 +255,50 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
   aspect-ratio: 16 / 9;
 }
 
-.controls { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; direction: ltr; user-select: none; }
-.controls .move-group { display: flex; gap: 16px; }
+.controls {
+  width: 100%; display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; direction: ltr; user-select: none; padding: 4px 8px 8px;
+}
+.joystick-zone {
+  /* large invisible touch pad on the left — stick floats under the finger */
+  width: 200px; height: 160px; position: relative; touch-action: none;
+  flex-shrink: 0;
+  /* subtle hint so players know where to press */
+  background: radial-gradient(ellipse at 50% 55%, rgba(0,240,255,0.06), transparent 70%);
+  border-radius: 24px;
+}
+.joystick-base {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(0,240,255,0.28), rgba(0,0,20,0.55));
+  border: 3px solid rgba(0,240,255,0.65);
+  box-shadow: 0 0 28px rgba(0,240,255,0.35), inset 0 0 22px rgba(0,0,0,0.55);
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  touch-action: none; pointer-events: none;
+  opacity: 0.35; /* idle ghost so user sees the control exists */
+  transition: opacity 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+}
+.joystick-base.visible {
+  opacity: 1;
+}
+.joystick-base.active {
+  opacity: 1;
+  border-color: rgba(255,0,224,0.85);
+  box-shadow: 0 0 36px rgba(255,0,224,0.45), 0 0 18px rgba(0,240,255,0.4), inset 0 0 22px rgba(0,0,0,0.55);
+}
+.joystick-knob {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(145deg, #00f0ff, #ff00e0);
+  border: 3px solid rgba(255,255,255,0.55);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 18px rgba(0,240,255,0.5);
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  touch-action: none; pointer-events: none;
+  will-change: transform;
+}
+.joystick-base.active .joystick-knob {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 0 30px rgba(255,0,224,0.85);
+}
 .ctrlbtn {
   height: 84px; width: 104px; border-radius: 18px; border: 2px solid #00f0ff;
   background: linear-gradient(135deg, #00f0ff, #ff00e0); color: #001018;
@@ -266,9 +308,17 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
   transition: transform 0.1s cubic-bezier(.2,.8,.2,1), box-shadow 0.15s ease;
 }
 .ctrlbtn.fire {
-  width: 160px; border-color: #ff00e0; background: linear-gradient(135deg, #ff00e0, #00f0ff); font-size: 19px;
-  animation: firePulse 1.8s ease-in-out infinite; font-family: 'Quicksand', sans-serif; font-weight: 800;
+  width: 150px; height: 90px; border-radius: 22px;
+  border-color: rgba(255,0,224,0.55);
+  background: linear-gradient(135deg, rgba(255,0,224,0.38), rgba(0,240,255,0.32));
+  color: rgba(255,255,255,0.92);
+  font-size: 20px; animation: firePulse 1.8s ease-in-out infinite;
+  font-family: 'Quicksand', sans-serif; font-weight: 800;
+  opacity: 0.72;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
+.ctrlbtn.fire:active { opacity: 0.95; }
 .ctrlbtn:active { transform: scale(0.93); box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 0 22px rgba(0,240,255,0.5); }
 @keyframes firePulse {
   0%, 100% { box-shadow: 0 0 0 rgba(255,0,224,0.0); }
@@ -298,33 +348,49 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
 @media (orientation: landscape) {
   html, body { height: 100%; overflow: hidden; }
   body {
-    padding: 6px; align-items: center;
+    padding: 4px; align-items: center;
     height: 100vh; height: 100dvh;
   }
   .wrap {
-    height: 100%; max-height: 100%;
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    height: 100%; max-height: 100%; width: 100%; max-width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
   }
   .topbar { padding: 2px 8px; font-size: 9px; gap: 1px 6px; flex: 0 0 auto; }
   .topbar .val { font-size: 9px; }
   .iconbtn { padding: 3px 6px; font-size: 9px; }
-  /* Sector progress isn't critical mid-fight (the trophy count in the topbar already
-     covers it), so it's hidden to save space — but the health bar stays visible;
-     hiding it entirely used to make it impossible to see your own hull damage. */
   .bar-block { flex: 0 0 auto; margin: 0; }
   #progressBlock { display: none; }
   .bar-label { font-size: 9px; margin-bottom: 1px; }
-  .bar-track { height: 6px; }
-  .bar-track.boss-track { height: 7px; }
+  .bar-track { height: 5px; }
+  .bar-track.boss-track { height: 6px; }
   .shield-row { font-size: 9px; gap: 3px; flex: 0 0 auto; }
   .shield-pip { width: 10px; height: 10px; }
+  /* Bigger playfield: stage eats almost all remaining height */
   .stage {
-    flex: 1 1 auto; min-height: 0; align-self: center;
-    width: auto; max-width: 100%; aspect-ratio: 16 / 9;
+    flex: 1 1 auto; min-height: 0; align-self: stretch;
+    width: 100%; max-width: 100%;
+    aspect-ratio: auto;   /* fill available height instead of forcing 16:9 box */
   }
-  body.pregame .stage { aspect-ratio: unset; width: 100%; max-width: 100%; }
-  .controls { flex: 0 0 auto; gap: 10px; }
-  .ctrlbtn { height: 64px; width: 80px; font-size: 24px; }
-  .ctrlbtn.fire { width: 132px; font-size: 15px; }
+  #gameCanvas { width: 100%; height: 100%; object-fit: contain; }
+  body.pregame .stage { aspect-ratio: unset; width: 100%; max-width: 100%; min-height: 70vh; }
+  .controls {
+    flex: 0 0 auto; gap: 24px; padding: 2px 12px 6px;
+    max-width: 100%;
+  }
+  .joystick-zone { width: 180px; height: 140px; }
+  .joystick-base { width: 110px; height: 110px; }
+  .joystick-knob { width: 50px; height: 50px; }
+  .ctrlbtn.fire { width: 130px; height: 78px; font-size: 17px; border-radius: 20px; }
   .hint-text { display: none; }
+}
+
+/* Very short landscape (phones) — still prioritize stage size */
+@media (orientation: landscape) and (max-height: 420px) {
+  .topbar { padding: 1px 6px; }
+  .bar-track { height: 4px; }
+  .shield-row { display: none; }
+  .joystick-zone { width: 150px; height: 110px; }
+  .joystick-base { width: 90px; height: 90px; }
+  .joystick-knob { width: 42px; height: 42px; }
+  .ctrlbtn.fire { width: 110px; height: 64px; font-size: 15px; }
 }
