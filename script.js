@@ -803,6 +803,56 @@ function explode(x, y, color, big) {
   }
 }
 
+// Muzzle flash + shell casings + exhaust when the player (or wingman) fires
+function muzzleFlash(x, y, kind) {
+  kind = kind || "pulse";
+  var col = "#00f0ff";
+  var col2 = "#ffffff";
+  var count = 6;
+  if (kind === "laser" || kind === "dualLaser") { col = "#aef1ff"; col2 = "#ffffff"; count = 8; }
+  else if (kind === "missile") { col = "#ff6b35"; col2 = "#ffd23f"; count = 10; }
+  else if (kind === "plasma") { col = "#c084fc"; col2 = "#f0abfc"; count = 9; }
+  else if (kind === "homing") { col = "#f97316"; col2 = "#fdba74"; count = 7; }
+  else if (kind === "frost") { col = "#7de8ff"; col2 = "#e0f7ff"; count = 8; }
+  else if (kind === "nova") { col = "#4ade80"; col2 = "#bbf7d0"; count = 10; }
+  else if (kind === "spread") { col = "#ffea00"; col2 = "#fff7cc"; count = 7; }
+  else {
+    var ship = currentShip();
+    col = (ship && ship.hull) || "#00f0ff";
+    col2 = (ship && ship.accent) || "#ffffff";
+  }
+  // bright core flash
+  state.particles.push({ type: "flash", x: x, y: y, life: 5, maxLife: 5, color: col2, r: kind === "missile" ? 18 : 12 });
+  // upward sparks
+  for (var i = 0; i < count; i++) {
+    var ang = -Math.PI / 2 + (Math.random() - 0.5) * 0.9;
+    var spd = 2 + Math.random() * 4;
+    state.particles.push({
+      type: "spark", x: x + (Math.random() - 0.5) * 6, y: y,
+      vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
+      life: 10 + Math.random() * 8, maxLife: 18, color: Math.random() > 0.4 ? col : col2,
+      size: 1.2 + Math.random() * 2
+    });
+  }
+  // short exhaust trails behind the muzzle
+  for (var t = 0; t < 3; t++) {
+    state.particles.push({
+      type: "trail",
+      x: x + (Math.random() - 0.5) * 8,
+      y: y + 2 + Math.random() * 4,
+      vx: (Math.random() - 0.5) * 1.2,
+      vy: 1.5 + Math.random() * 2,
+      life: 8 + Math.random() * 6, maxLife: 14,
+      color: col, r: 2 + Math.random() * 2
+    });
+  }
+  // dual laser: extra side flashes
+  if (kind === "dualLaser") {
+    state.particles.push({ type: "flash", x: x - 9, y: y, life: 4, maxLife: 4, color: "#ffd23f", r: 10 });
+    state.particles.push({ type: "flash", x: x + 9, y: y, life: 4, maxLife: 4, color: "#ffd23f", r: 10 });
+  }
+}
+
 function shakeScreen(mag, time) {
   state.shake.mag = Math.max(state.shake.mag, mag);
   state.shake.time = Math.max(state.shake.time, time);
@@ -1252,18 +1302,36 @@ function shoot() {
   var now = Date.now();
   // Death beam is continuous — play a soft hum while held, no discrete shots
   if (now < (state.effects.deathBeamUntil || 0)) {
-    if (state.keys[" "] || state.touch.fire) snd.beamHum();
+    if (state.keys[" "] || state.touch.fire) {
+      snd.beamHum();
+      // continuous beam particles along the column
+      if (Math.random() < 0.55) {
+        var bx = state.player.x + state.player.w / 2;
+        state.particles.push({
+          type: "spark",
+          x: bx + (Math.random() - 0.5) * 14,
+          y: state.player.y - Math.random() * state.player.y,
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: -1 - Math.random() * 2,
+          life: 8 + Math.random() * 6, maxLife: 14,
+          color: Math.random() > 0.5 ? "#ff2d55" : "#ffd23f",
+          size: 1.5 + Math.random() * 2
+        });
+      }
+      if (Math.random() < 0.25) {
+        muzzleFlash(state.player.x + state.player.w / 2, state.player.y, "laser");
+      }
+    }
     return;
   }
   if (now - state.lastShot > computeFireInterval()) {
-    spawnPlayerBullets(state.player.x + state.player.w / 2, state.player.y);
+    var mx = state.player.x + state.player.w / 2;
+    var my = state.player.y;
+    var kind = activeWeaponSoundKind();
+    spawnPlayerBullets(mx, my);
+    muzzleFlash(mx, my, kind);
     state.lastShot = now;
-    snd.shoot(activeWeaponSoundKind());
-  }
-  if (state.wingman && now - (state.wingman.lastShot || 0) > 260) {
-    state.bullets.push({ x: state.wingman.x + state.wingman.w / 2 - 2, y: state.wingman.y, w: 4, h: 12, speed: 10, dmg: computeDamage(), vx: 0 });
-    state.wingman.lastShot = now;
-    snd.shoot("pulse");
+    snd.shoot(kind);
   }
 }
 
@@ -1633,6 +1701,20 @@ function update() {
       } else {
         s.wingman.x = s.player.x - 46;
         s.wingman.y = s.player.y + 6;
+        // Wingman auto-fires on its own — no FIRE button needed
+        if (now - (s.wingman.lastShot || 0) > 280) {
+          var wx = s.wingman.x + s.wingman.w / 2;
+          var wy = s.wingman.y;
+          s.bullets.push({
+            x: wx - 2, y: wy,
+            w: 4, h: 12, speed: 10,
+            dmg: Math.max(1, computeDamage()),
+            vx: 0, color: "#4ade80", type: "pulse"
+          });
+          muzzleFlash(wx, wy, "pulse");
+          s.wingman.lastShot = now;
+          snd.shoot("pulse");
+        }
       }
     }
   }
