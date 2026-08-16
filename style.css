@@ -167,18 +167,80 @@ h1, h2, .neon-font { font-family: 'Orbitron', 'Quicksand', sans-serif; }
 .playcount-note { font-size: 11px; color: #5b6178; margin-top: 10px; max-width: 380px; }
 
 /* ---------- Instructions / How to Play ---------- */
-#overlayInstructions { padding: 14px 20px; }
-.howto-block { width: 100%; max-width: 440px; text-align: left; margin-top: 10px; }
+#overlayInstructions {
+  padding: 10px 14px 16px;
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.howto-topbar {
+  width: 100%; display: flex; justify-content: flex-end; margin-bottom: 4px; flex-shrink: 0;
+}
+.howto-lang-btn { font-size: 12px !important; padding: 5px 10px !important; }
+.howto-heading { font-size: 18px !important; margin: 0 0 6px !important; }
+.howto-intro {
+  font-size: 11px !important; line-height: 1.35; margin: 0 0 8px !important;
+  max-width: 520px; color: #9aa0b4;
+}
+.howto-block { width: 100%; max-width: 520px; text-align: left; margin-top: 6px; }
 .howto-title {
-  font-family: 'Orbitron', sans-serif; color: #00f0ff; font-weight: 800; font-size: 13px;
-  letter-spacing: 1px; margin-bottom: 6px; text-align: center;
+  font-family: 'Orbitron', sans-serif; color: #00f0ff; font-weight: 800; font-size: 11px;
+  letter-spacing: 1px; margin-bottom: 4px; text-align: center;
 }
 .howto-line {
-  font-size: 12.5px; color: #c7ccdc; margin: 4px 0; line-height: 1.4;
-  border: 1px solid rgba(0,240,255,0.18); background: rgba(0,240,255,0.04);
-  border-radius: 8px; padding: 6px 10px;
+  font-size: 10.5px; color: #c7ccdc; margin: 3px 0; line-height: 1.35;
+  border: 1px solid rgba(0,240,255,0.16); background: rgba(0,240,255,0.04);
+  border-radius: 6px; padding: 4px 8px;
 }
 .howto-line b { color: #eaf0ff; }
+.howto-hint { font-size: 10px !important; margin: 8px 0 6px !important; max-width: 520px; }
+.howto-actions { margin-top: 6px; margin-bottom: env(safe-area-inset-bottom, 6px); }
+
+/* Full-screen how-to (portrait + landscape) */
+body.howto-open {
+  padding: 0 !important;
+  overflow: hidden;
+}
+body.howto-open .wrap {
+  max-width: none;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  gap: 0;
+}
+body.howto-open .topbar,
+body.howto-open .bar-block,
+body.howto-open .shield-row,
+body.howto-open .controls,
+body.howto-open .hint-text {
+  display: none !important;
+}
+body.howto-open .stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: unset;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  z-index: 50;
+  overflow: hidden;
+}
+body.howto-open #gameCanvas { display: none !important; }
+body.howto-open #overlayInstructions {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  background: rgba(4, 4, 14, 0.97);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 /* ---------- Shop ---------- */
 /* Shop content can be taller than the stage (many ships to scroll through), and a
@@ -198,7 +260,7 @@ h1, h2, .neon-font { font-family: 'Orbitron', 'Quicksand', sans-serif; }
 .shop-coins { font-family: 'Orbitron', sans-serif; color: #ffd23f; font-weight: 800; font-size: 15px; margin-bottom: 8px; text-shadow: 0 0 10px rgba(255,210,63,0.5); }
 .shop-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;
-  width: 100%; max-width: 620px; max-height: 340px; overflow-y: auto; padding: 4px;
+  width: 100%; max-width: 720px; max-height: min(55vh, 420px); overflow-y: auto; padding: 4px;
   flex: 1 1 180px; min-height: 150px;
   scrollbar-width: thin; scrollbar-color: rgba(0,240,255,0.5) rgba(0,0,0,0.2);
 }
@@ -226,8 +288,20 @@ h1, h2, .neon-font { font-family: 'Orbitron', 'Quicksand', sans-serif; }
 .shop-card.owned { border-color: rgba(74,222,128,0.6); }
 .shop-card.selected { border-color: #ffd23f; box-shadow: 0 0 14px rgba(255,210,63,0.4); }
 .shop-card canvas { width: 60px; height: 60px; filter: drop-shadow(0 0 6px rgba(0,240,255,0.35)); }
+.shop-card .upgrade-icon {
+  font-size: 32px; line-height: 1; width: 56px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 14px;
+  background: radial-gradient(circle at 40% 35%, rgba(0,240,255,0.22), rgba(0,0,20,0.45));
+  border: 2px solid rgba(0,240,255,0.35);
+  box-shadow: 0 0 12px rgba(0,240,255,0.2);
+}
 .shop-card .name { font-weight: 800; font-size: 13px; color: #eaf0ff; font-family: 'Orbitron', sans-serif; }
 .shop-card .stats { font-size: 10px; color: #9aa0b4; text-align: center; line-height: 1.4; }
+.control-side-btn {
+  margin: 6px auto 10px; display: block; font-size: 13px !important;
+  padding: 8px 14px !important;
+}
 .shop-card button {
   margin-top: 4px; border: none; cursor: pointer; border-radius: 8px; padding: 6px 10px; font-size: 12px;
   font-weight: 700; font-family: 'Quicksand', sans-serif;
@@ -251,6 +325,74 @@ body.pregame .shield-row,
 body.pregame .controls { display: none !important; }
 body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; }
 
+/* Joystick + FIRE only during active gameplay (playing / boss / warning). */
+body:not(.gameplay) .controls { display: none !important; }
+
+/* ---------- Full-screen shop (portrait + landscape) ---------- */
+body.shop-open {
+  padding: 0 !important;
+  overflow: hidden;
+}
+body.shop-open .wrap {
+  max-width: none;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  gap: 0;
+}
+body.shop-open .topbar,
+body.shop-open .bar-block,
+body.shop-open .shield-row,
+body.shop-open .controls,
+body.shop-open .hint-text {
+  display: none !important;
+}
+body.shop-open .stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: unset;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  z-index: 50;
+  overflow: hidden;
+}
+body.shop-open #gameCanvas {
+  display: none !important;
+}
+body.shop-open #overlayShop {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  padding: 12px 14px 20px;
+  justify-content: flex-start;
+  background: rgba(4, 4, 14, 0.97);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+}
+body.shop-open .shop-grid {
+  max-height: none;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: 100%;
+  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 16px;
+}
+body.shop-open .close-shop {
+  margin-top: 10px;
+  margin-bottom: env(safe-area-inset-bottom, 8px);
+}
+
 .stage {
   aspect-ratio: 16 / 9;
 }
@@ -259,24 +401,27 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
   width: 100%; display: flex; align-items: flex-end; justify-content: space-between;
   gap: 20px; direction: ltr; user-select: none; padding: 4px 8px 8px;
 }
+.controls.controls-right {
+  flex-direction: row-reverse;
+}
 .joystick-zone {
-  /* large invisible touch pad on the left — stick floats under the finger */
-  width: 200px; height: 160px; position: relative; touch-action: none;
+  /* larger touch pad for snappier, more forgiving control */
+  width: 240px; height: 180px; position: relative; touch-action: none;
   flex-shrink: 0;
-  /* subtle hint so players know where to press */
-  background: radial-gradient(ellipse at 50% 55%, rgba(0,240,255,0.06), transparent 70%);
-  border-radius: 24px;
+  background: radial-gradient(ellipse at 50% 55%, rgba(0,240,255,0.08), transparent 72%);
+  border-radius: 28px;
+  -webkit-user-select: none; user-select: none;
 }
 .joystick-base {
-  width: 120px; height: 120px; border-radius: 50%;
+  width: 128px; height: 128px; border-radius: 50%;
   background: radial-gradient(circle at 40% 35%, rgba(0,240,255,0.28), rgba(0,0,20,0.55));
   border: 3px solid rgba(0,240,255,0.65);
   box-shadow: 0 0 28px rgba(0,240,255,0.35), inset 0 0 22px rgba(0,0,0,0.55);
   position: absolute; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   touch-action: none; pointer-events: none;
-  opacity: 0.35; /* idle ghost so user sees the control exists */
-  transition: opacity 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+  opacity: 0.4;
+  transition: opacity 0.08s ease, box-shadow 0.1s ease, border-color 0.1s ease;
 }
 .joystick-base.visible {
   opacity: 1;
@@ -287,7 +432,7 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
   box-shadow: 0 0 36px rgba(255,0,224,0.45), 0 0 18px rgba(0,240,255,0.4), inset 0 0 22px rgba(0,0,0,0.55);
 }
 .joystick-knob {
-  width: 56px; height: 56px; border-radius: 50%;
+  width: 58px; height: 58px; border-radius: 50%;
   background: linear-gradient(145deg, #00f0ff, #ff00e0);
   border: 3px solid rgba(255,255,255,0.55);
   box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 18px rgba(0,240,255,0.5);
@@ -295,6 +440,7 @@ body.pregame .stage { aspect-ratio: unset; min-height: 76vh; min-height: 76dvh; 
   transform: translate(-50%, -50%);
   touch-action: none; pointer-events: none;
   will-change: transform;
+  transition: none; /* no CSS lag — transform updates every pointer event */
 }
 .joystick-base.active .joystick-knob {
   box-shadow: 0 2px 10px rgba(0,0,0,0.6), 0 0 30px rgba(255,0,224,0.85);
